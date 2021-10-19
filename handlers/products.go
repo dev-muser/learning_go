@@ -16,13 +16,18 @@ func NewProducts(l *log.Logger) *Products {
 }
 
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		p.getProducts(rw, r)
+		return
+	}
+
+	//catch all
+	rw.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 	listOfProducts := data.GetProducts()
-	// converting to json
 	err := listOfProducts.ToJSON(rw)
-	// d, err := json.Marshal(listOfProducts)
-	// reason to change to encoder is that i dont have to buffer anything
-	//into memory. Dont have to allocate memory for that data.
-	// encoder is also faster than using marshal
 	if err != nil {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
 	}

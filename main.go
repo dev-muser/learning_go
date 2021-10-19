@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/dev-muser/learning_go/handlers"
 )
@@ -20,6 +21,14 @@ func main() {
 	servemux.Handle("/goodbye", goodbye_handler)
 
 	fmt.Println("Server is up and running.")
-	http.ListenAndServe(":7777", servemux)
+	server := &http.Server{
+		Addr: ":7777",
+		Handler: servemux,
+		IdleTimeout: 120*time.Second,
+		ReadTimeout: 1 * time.Second,
+		WriteTimeout: 1 * time.Second,
+	}
+
+	server.ListenAndServe()
 
 }

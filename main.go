@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/dev-muser/learning_go/handlers"
@@ -28,7 +30,29 @@ func main() {
 		ReadTimeout: 1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
+	//implementing graceful shutdown
+	// for usecases like big file upload or db transaction, 
+	// could have the risk of disconecting my client, 
+	// not allowing to finish the work.
 
-	server.ListenAndServe()
+	go func() {
+		err := server.ListenAndServe() // will going to block so put inside a goroutine
+		if err != nil {
+			l.Fatal(err)
+		}
+	}()
+
+	//but because is still imediately start to shutdown
+	// going to use os.signal to register for certain signal notification
+
+	sigChan := make(chan os.Signal)
+	signal.Notify(sigChan, os.Interrupt) //broadcast the message on the channel
+	signal.Notify(sigChan, os.Kill)
+	
+	sig := <-sigChan
+	l.Println("Received terminate, graceful shutdown", sig)
+	
+	timeout_context,  _ := context.WithTimeout(context.Background(), 30*time.Second)
+	server.Shutdown(timeout_context)
 
 }

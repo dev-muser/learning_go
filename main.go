@@ -20,8 +20,11 @@ func main() {
 	products_handler := handlers.NewProducts(l)
 
 	servemux := mux.NewRouter()
-	getRouter := servemux.Methods("GET").Subrouter()
+	getRouter := servemux.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", products_handler.GetProducts)
+
+	putRouter := servemux.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", products_handler.UpdateProducts)
 
 	fmt.Println("Server is up and running.")
 	server := &http.Server{

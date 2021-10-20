@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/dev-muser/learning_go/handlers"
 )
 
@@ -17,8 +19,9 @@ func main() {
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 	products_handler := handlers.NewProducts(l)
 
-	servemux := http.NewServeMux()         // HTTP request multiplexer
-	servemux.Handle("/", products_handler) //changed from /products because didn't worked on PUT
+	servemux := mux.NewRouter()
+	getRouter := servemux.Methods("GET").Subrouter()
+	getRouter.HandleFunc("/", products_handler.GetProducts)
 
 	fmt.Println("Server is up and running.")
 	server := &http.Server{

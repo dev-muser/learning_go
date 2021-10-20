@@ -17,8 +17,8 @@ func main() {
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 	products_handler := handlers.NewProducts(l)
 
-	servemux := http.NewServeMux() // HTTP request multiplexer
-	servemux.Handle("/products", products_handler)
+	servemux := http.NewServeMux()         // HTTP request multiplexer
+	servemux.Handle("/", products_handler) //changed from /products because didn't worked on PUT
 
 	fmt.Println("Server is up and running.")
 	server := &http.Server{

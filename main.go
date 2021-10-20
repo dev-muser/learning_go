@@ -18,16 +18,22 @@ func main() {
 
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 	products_handler := handlers.NewProducts(l)
-
 	servemux := mux.NewRouter()
+	// Request comes to server
+	// It gets picked up by the router
+	// See that is a PUT / POST request (because subrouter.Use(middleware))
+	// send request to subrouter and execute the middleware. If it passes, then
+	// goes to the handle func.
 	getRouter := servemux.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", products_handler.GetProducts)
 
 	putRouter := servemux.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/{id:[0-9]+}", products_handler.UpdateProducts)
+	putRouter.Use(products_handler.MiddlewareProductValidation) //middleware validation applied
 
 	postRouter := servemux.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", products_handler.AddProduct)
+	postRouter.Use(products_handler.MiddlewareProductValidation) //middleware validation applied
 
 	fmt.Println("Server is up and running.")
 	server := &http.Server{

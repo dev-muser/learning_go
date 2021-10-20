@@ -26,6 +26,9 @@ func main() {
 	putRouter := servemux.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/{id:[0-9]+}", products_handler.UpdateProducts)
 
+	postRouter := servemux.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", products_handler.AddProduct)
+
 	fmt.Println("Server is up and running.")
 	server := &http.Server{
 		Addr:         ":7777",

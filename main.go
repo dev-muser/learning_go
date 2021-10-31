@@ -27,6 +27,7 @@ func main() {
 	// goes to the handle func.
 	getRouter := servemux.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", products_handler.GetProducts)
+	getRouter.HandleFunc("/{id:[0-9]+}", products_handler.ListSingle)
 
 	putRouter := servemux.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/{id:[0-9]+}", products_handler.UpdateProducts)

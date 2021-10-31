@@ -25,6 +25,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// A list of products returns in the response
+// swagger:response productResponse
+type productsResponse struct {
+	// All products in the system
+	// in: body
+	Body []data.Product
+}
+
+// Products is a http.Handler
 type Products struct {
 	l *log.Logger
 }
@@ -33,14 +42,14 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Product")
-	listOfProducts := data.GetProducts()
-	err := listOfProducts.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-	}
-}
+// func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
+// 	p.l.Println("Handle GET Product")
+// 	listOfProducts := data.GetProducts()
+// 	err := listOfProducts.ToJSON(rw)
+// 	if err != nil {
+// 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+// 	}
+// }
 
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST Product")

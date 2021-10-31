@@ -6,6 +6,10 @@ import (
 	"github.com/dev-muser/learning_go/data"
 )
 
+// swagger:route DELETE /products/{id} products deleteProduct
+// responses:
+// 		201: noContent
+// Delete deletes a product from datastore
 func (p *Products) Delete(rw http.ResponseWriter, r *http.Request) {
 	id := getProductID(r)
 	p.l.Println("Handle DELETE Product", id)

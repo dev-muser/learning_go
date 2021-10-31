@@ -11,7 +11,11 @@ import (
 )
 
 //Product defines the structure for the API
+// swagger:model
 type Product struct {
+	// the id for this user
+	// required: true
+	// min: 1
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
@@ -52,8 +56,21 @@ func (p *Products) ToJSON(w io.Writer) error {
 	return encoder.Encode(p)
 }
 
+// GetProducts return all products from the datastore
 func GetProducts() Products {
 	return productList
+}
+
+// GetProductByID return a single product which matches the id
+// from the datastore.
+// If a product is not found this function returns a ProductNotFound error
+func GetProductByID(id int) (*Product, error) {
+	i := findIndexByProductID(id)
+	if i == -1 {
+		return nil, ErrProductNotFound
+	}
+
+	return productList[i], nil
 }
 
 func AddProduct(p *Product) {

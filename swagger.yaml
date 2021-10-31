@@ -9,7 +9,9 @@ definitions:
         type: string
         x-go-name: Description
       id:
+        description: the id for this user
         format: int64
+        minimum: 1
         type: integer
         x-go-name: ID
       name:
@@ -22,6 +24,8 @@ definitions:
       sku:
         type: string
         x-go-name: SKU
+    required:
+    - id
     type: object
     x-go-package: github.com/dev-muser/learning_go/data
 info:
@@ -38,9 +42,36 @@ paths:
           $ref: '#/responses/productsResponse'
       tags:
       - products
+  /products/{id}:
+    delete:
+      operationId: deleteProduct
+      parameters:
+      - description: The id of the product to delete from the datastore
+        format: int64
+        in: path
+        name: ID
+        required: true
+        type: integer
+      responses:
+        "201":
+          $ref: '#/responses/noContent'
+      tags:
+      - products
+    get:
+      description: Return a list of products from the datastore
+      operationId: listSingle
+      responses:
+        "200":
+          $ref: '#/responses/productResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - products
 produces:
 - application/json
 responses:
+  noContent:
+    description: ""
   productResponse:
     description: A list of products returns in the response
     schema:

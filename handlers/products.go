@@ -118,3 +118,26 @@ func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 		next.ServeHTTP(rw, req)
 	})
 }
+
+// GenericError is a generic error message returned by a server
+type GenericError struct {
+	Message string `json:"message"`
+}
+
+// getProductID return the product ID from the URL
+// Panics if cannot convert the id into an integer
+// thins should never happen as the router ensures that
+// this is a valid number
+func getProductID(r *http.Request) int {
+	// parse the product id from the URL
+	vars := mux.Vars(r)
+
+	// convert the id into the integer and return
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		// should never happen
+		panic(err)
+	}
+
+	return id
+}

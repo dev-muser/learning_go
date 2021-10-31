@@ -36,6 +36,9 @@ func main() {
 	postRouter.HandleFunc("/", products_handler.AddProduct)
 	postRouter.Use(products_handler.MiddlewareProductValidation) //middleware validation applied
 
+	deleteRouter := servemux.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/{id:[0-9]+}", products_handler.Delete)
+
 	//add a docs handle with a special middleware
 	redocOptions := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
 	specialHandlerRedoc := middleware.Redoc(redocOptions, nil)
